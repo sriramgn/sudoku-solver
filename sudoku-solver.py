@@ -116,12 +116,14 @@ def print_color(text, text_color, background_color):
     print(background_color + text_color + text + RESET)
 
 def DisplayProblem(problem):
-    print (BG_YELLOW+BLACK+" "*15+" SOLUTION"+" "*15+RESET)
+    print (BG_YELLOW+BLACK+" "*16+" SOLUTION"+" "*16+RESET)
     for i in range(9):
         row_text = ""
         row2_text = ""
-        row_text += (BG_YELLOW+BLACK+" "+RESET)
-        row2_text += (BG_YELLOW+BLACK+" "+RESET)
+        row0_text = ""
+        row_text += (BG_YELLOW+BLACK+"  "+RESET)
+        row2_text += (BG_YELLOW+BLACK+"  "+RESET)
+        row0_text += (BG_YELLOW+BLACK+"  "+RESET)
         for j in range(9):
             div_row = int(i/3)
             div_col = int(j/3)
@@ -131,30 +133,40 @@ def DisplayProblem(problem):
                 color = WHITE
                 bg = BG_BLACK
             row_text += bg + color
+            if i == 0:
+                row0_text += BG_WHITE + BLACK
             if i == 2 or i == 5:
                 row2_text += BG_WHITE + BLACK
+                row0_text += BG_WHITE + BLACK
             else:
                 row2_text += bg + color
+                row0_text += bg + color
             if j == 0:
                 row_text += "|"
                 row2_text += "+"
+                row0_text += "+"
             row_text += " x" if problem[i][j]==None else " "+str(problem[i][j])
             row2_text += " -"
+            row0_text += " -"
             if j == 5 or j == 2:
                 row_text += " " + BG_WHITE + BLACK + "|"
                 row2_text += " " + BG_WHITE + BLACK + "+"
+                row0_text += " " + BG_WHITE + BLACK + "+"
             else:
                 row_text += " |"
                 row2_text += " -"
+                row0_text += " -"
             row_text += RESET
             row2_text += RESET
-        row_text += (BG_YELLOW+BLACK+" "+RESET)
-        row2_text += (BG_YELLOW+BLACK+" "+RESET)
+            row0_text += RESET
+        row_text += (BG_YELLOW+BLACK+"  "+RESET)
+        row2_text += (BG_YELLOW+BLACK+"  "+RESET)
+        row0_text += (BG_YELLOW+BLACK+"  "+RESET)
         if i==0:
-            print (row2_text)
+            print (row0_text)
         print (row_text)
         print (row2_text)
-    print (BG_YELLOW+BLACK+" "*39+RESET)
+    print (BG_YELLOW+BLACK+" "*41+RESET)
 
 def CheckSolved(problem):
     for row in problem:
