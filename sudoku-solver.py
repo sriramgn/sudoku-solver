@@ -1,6 +1,29 @@
 import itertools
 import random
 
+# ANSI escape codes for colors
+BLACK = '\033[30m'
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BLUE = '\033[34m'
+MAGENTA = '\033[35m'
+CYAN = '\033[36m'
+WHITE = '\033[37m'
+
+# ANSI escape codes for background colors
+BG_BLACK = '\033[40m'
+BG_RED = '\033[41m'
+BG_GREEN = '\033[42m'
+BG_YELLOW = '\033[43m'
+BG_BLUE = '\033[44m'
+BG_MAGENTA = '\033[45m'
+BG_CYAN = '\033[46m'
+BG_WHITE = '\033[47m'
+
+# ANSI escape code for resetting colors
+RESET = '\033[0m'
+
 UNIVERSAL_SET = set(range(1,10))
 n = None
 problem1 = [
@@ -89,17 +112,34 @@ def RemoveSolutionSet(cell_combos, problem, display=False):
                 remove_from_solution_set.extend(list(combo_solution_set))
     return set(remove_from_solution_set)
 
+def print_color(text, text_color, background_color):
+    print(background_color + text_color + text + RESET)
+
 def DisplayProblem(problem):
-    print (" -" + "---"*11 +"- ")
-    i = 0
-    for row in problem:
-        str_row = list(map(lambda x : "x" if x==None else str(x), row))
-        print ("| " + " | ".join(str_row) + " |")
-        if i < 8:
-            print ("| " + "---" * 11 + " |")
-        else:
-            print (" -" + "---"*11 +"- ")
-        i+=1
+    print (BG_YELLOW+BLACK+" "*15+" SOLUTION"+" "*15+RESET)
+    for i in range(9):
+        row_text = ""
+        row_text += (BG_YELLOW+BLACK+" "+RESET)
+        for j in range(9):
+            div_row = int(i/3)
+            div_col = int(j/3)
+            color = BLACK
+            bg = BG_WHITE
+            if (div_row+div_col)%2 == 1:
+                color = WHITE
+                bg = BG_BLACK
+            row_text += bg + color
+            if j == 0:
+                row_text += "|"
+            row_text += " x" if problem[i][j]==None else " "+str(problem[i][j])
+            if j == 5 or j == 2:
+                row_text += " " + BG_WHITE + BLACK + "|"
+            else:
+                row_text += " |"
+            row_text += RESET
+        row_text += (BG_YELLOW+BLACK+" "+RESET)
+        print (row_text)
+    print (BG_YELLOW+BLACK+" "*39+RESET)
 
 def CheckSolved(problem):
     for row in problem:
