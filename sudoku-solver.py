@@ -133,29 +133,34 @@ def DisplayProblem(problem):
                 color = WHITE
                 bg = BG_BLACK
             row_text += bg + color
-            if i == 0:
-                row0_text += BG_WHITE + BLACK
-            if i == 2 or i == 5:
+            if i == 2 or i == 5 or i == 8:
                 row2_text += BG_WHITE + BLACK
                 row0_text += BG_WHITE + BLACK
             else:
                 row2_text += bg + color
                 row0_text += bg + color
+            if i == 0:
+                row0_text += BG_WHITE + BLACK
             if j == 0:
+                row_text += BG_WHITE + BLACK
+                row2_text += BG_WHITE + BLACK
                 row_text += "|"
                 row2_text += "+"
                 row0_text += "+"
+                row_text += bg + color
+                if i != 5:
+                    row2_text += bg + color
             row_text += " x" if problem[i][j]==None else " "+str(problem[i][j])
             row2_text += " -"
             row0_text += " -"
-            if j == 5 or j == 2:
+            if j == 5 or j == 2 or j == 8:
                 row_text += " " + BG_WHITE + BLACK + "|"
                 row2_text += " " + BG_WHITE + BLACK + "+"
                 row0_text += " " + BG_WHITE + BLACK + "+"
             else:
                 row_text += " |"
-                row2_text += " -"
-                row0_text += " -"
+                row2_text += " +"
+                row0_text += " +"
             row_text += RESET
             row2_text += RESET
             row0_text += RESET
