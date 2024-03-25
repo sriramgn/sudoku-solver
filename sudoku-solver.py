@@ -26,6 +26,17 @@ RESET = '\033[0m'
 
 UNIVERSAL_SET = set(range(1,10))
 n = None
+hardest_problem = [
+    [8, n, n, n, n, n, n, n, n],
+    [n, n, 3, 6, n, n, n, n, n],
+    [n, 7, n, n, 9, n, 2, n, n],
+    [n, 5, n, n, n, 7, n, n, n],
+    [n, n, n, n, 4, 5, 7, n, n],
+    [n, n, n, 1, n, n, n, 3, n],
+    [n, n, 1, n, n, n, n, 6, 8],
+    [n, n, 8, 5, n, n, n, 1, n],
+    [n, 9, n, n, n, n, 4, n, n],
+]
 problem1 = [
     [n, n, n, 6, n, n, 9, n, n],
     [n, n, n, n, n, 7, n, n, n],
@@ -150,7 +161,7 @@ def DisplayProblem(problem):
                 row_text += bg + color
                 if i != 5:
                     row2_text += bg + color
-            row_text += " x" if problem[i][j]==None else " "+str(problem[i][j])
+            row_text += " " +BG_RED+WHITE+"x"+RESET+bg+color if problem[i][j]==None else " "+str(problem[i][j])
             row2_text += " -"
             row0_text += " -"
             if j == 5 or j == 2 or j == 8:
@@ -222,7 +233,7 @@ def SolveIteratively(problem, assume=False):
             random_cell = random.randint(0,len(assumptions)-1)
             random_value = random.randint(0, len(assumptions[random_cell])-1)
             problem[assumptions[random_cell][0][0]][assumptions[random_cell][0][1]] = assumptions[random_cell][1][random_value]
-            #problem[assumptions[-1][0][0]][assumptions[-1][0][1]] = assumptions[-1][1][0]
+            #problem[assumptions[0][0][0]][assumptions[0][0][1]] = assumptions[0][1][0]
             tot_solved += 1
 
     return tot_solved
@@ -231,7 +242,7 @@ def SolveIteratively(problem, assume=False):
 assume = False
 number_of_assumptions = 0
 for rounds in range(5000):
-    solved = SolveIteratively(problem1, assume)
+    solved = SolveIteratively(hardest_problem, assume)
     if solved == 0:
         assume = True
         number_of_assumptions += 1
@@ -241,4 +252,4 @@ for rounds in range(5000):
     else:
         assume = False
 
-DisplayProblem(problem1)
+DisplayProblem(hardest_problem)
