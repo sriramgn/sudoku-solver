@@ -25,7 +25,9 @@ BG_WHITE = '\033[47m'
 RESET = '\033[0m'
 
 UNIVERSAL_SET = set(range(1,10))
+
 n = None
+
 hardest_problem = [
     [8, n, n, n, n, n, n, n, n],
     [n, n, 3, 6, n, n, n, n, n],
@@ -37,6 +39,7 @@ hardest_problem = [
     [n, n, 8, 5, n, n, n, 1, n],
     [n, 9, n, n, n, n, 4, n, n],
 ]
+
 problem1 = [
     [n, n, n, 6, n, n, 9, n, n],
     [n, n, n, n, n, 7, n, n, n],
@@ -49,6 +52,8 @@ problem1 = [
     [n, n, 4, n, n, n, n, 6, 8],
 ]
 
+DEAD_ASSUMPTIONS = []
+ASSUMPTION_CHAIN = ""
 def GetRowNumbers(row_no, problem):
     numbers = []
     for col_no in range(9):
@@ -192,6 +197,7 @@ def CheckSolved(problem):
     return True
 
 def SolveIteratively(problem, assume=False):
+    global ASSUMPTION_CHAIN
     tot_solved = 0
     assumptions = []
     if CheckSolved(problem):
@@ -201,16 +207,6 @@ def SolveIteratively(problem, assume=False):
             if problem[i][j] == None:
                 solution_set = GetSolutionSet(i, j, problem)
                 div_cells, row_cells, col_cells = GetEmptyDivisionalCells(i, j, problem)
-                div_solution_set = []
-                row_solution_set = []
-                col_solution_set = []
-
-                for div_cell in div_cells:
-                    div_solution_set.extend(list(GetSolutionSet(div_cell[0], div_cell[1], problem)))
-                for row_cell in row_cells:
-                    row_solution_set.extend(list(GetSolutionSet(row_cell[0], row_cell[1], problem)))
-                for col_cell in col_cells:
-                    col_solution_set.extend(list(GetSolutionSet(col_cell[0], col_cell[1], problem)))
 
                 row_cell_combos = GetCellCombinations(row_cells)
                 col_cell_combos = GetCellCombinations(col_cells)
@@ -232,24 +228,47 @@ def SolveIteratively(problem, assume=False):
         if len(assumptions)>0:
             random_cell = random.randint(0,len(assumptions)-1)
             random_value = random.randint(0, len(assumptions[random_cell])-1)
+            assumption_key = f"{assumptions[random_cell][0]}-{assumptions[random_cell][1][random_value]};"
+            if assumption_key in DEAD_ASSUMPTIONS:
+                return 0
             problem[assumptions[random_cell][0][0]][assumptions[random_cell][0][1]] = assumptions[random_cell][1][random_value]
+            ASSUMPTION_CHAIN += assumption_key
             #problem[assumptions[0][0][0]][assumptions[0][0][1]] = assumptions[0][1][0]
             tot_solved += 1
+        else:
+            return -2
 
     return tot_solved
 
 
-assume = False
-number_of_assumptions = 0
-for rounds in range(5000):
-    solved = SolveIteratively(hardest_problem, assume)
-    if solved == 0:
-        assume = True
-        number_of_assumptions += 1
-    elif solved == -1:
-        print (f"Took {rounds} iterations to solve the puzzle. Number of assumptions = {number_of_assumptions}")
-        break
-    else:
-        assume = False
+def SolveProblem(problem):
+    global ASSUMPTION_CHAIN
+    assume = False
+    number_of_assumptions = 0
+    ASSUMPTION_CHAIN = ""
+    for rounds in range(162):
+        solved = SolveIteratively(problem, assume)
+        if solved == 0:
+            assume = True
+            number_of_assumptions += 1
+        elif solved == -1:
+            #print (f"Took {rounds} iterations to solve the puzzle. Number of assumptions = {number_of_assumptions}")
+            return True
+        elif solved == -2:
+            #print (f"Took {rounds} iterations. Could not solve this problem.")
+            if ASSUMPTION_CHAIN != "":
+                DEAD_ASSUMPTIONS.append(ASSUMPTION_CHAIN)
+            return False
+        else:
+            assume = False
+    return False
 
-DisplayProblem(hardest_problem)
+def AttemptSolveProblem(problem):
+    import json
+    for attempt in range(1000):
+        nproblem = json.loads(json.dumps(problem))
+        if SolveProblem(nproblem):
+            DisplayProblem(nproblem)
+            break
+
+AttemptSolveProblem(hardest_problem)
